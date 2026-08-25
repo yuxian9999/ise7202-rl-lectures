@@ -176,5 +176,5 @@ export const slides = [
   ...[0,1,2,3].map(i=>({kind:"dense",title:"UCB regret (upper) bounds¹",body:regretBoundsBody(i)+`<p class="footnote">¹ If interested, see Slivkins (2019) for derivation details.</p>`})),
   ...[0,1,2,3,8].map(i=>({kind:"dense",title:"Other MAB problems",body:reveal(otherMabs,i)})),
   {kind:"dense",title:"Additional resources to learn about MABs",body:`<p class="scarlet">Two great monographs:</p>${ul([`(on stochastic and adversarial bandits) “Regret Analysis of Stochastic and Nonstochastic Multi-armed Bandit Problems” by Sebastien Bubeck and Nicolo Cesa-Bianchi, 2012.`,`(on Markovian bandits) “Multi-armed bandit problems” by A. Mahajan and D. Teneketzis, 2008.`])}<p class="scarlet">And two textbooks, both available online (free):</p>${ul([`(a concise one) “Introduction to Multi-Armed Bandits” by Alex Slivkins.`,`(a more detailed one) “Bandit Algorithms” by T. Lattimore and Cs. Szepesvari, with the accompanying blog <span class="url">https://banditalgs.com/about/</span>.`])}`},
-  {title:"Next time",body:ul([`Markov Decision Processes`,`Homework 1 is posted and is due on 9/24.`])}
+  {title:"Next time",body:ul([`Markov Decision Processes`,`Homework 1 is posted and is due on 9/17.`])}
 ];
