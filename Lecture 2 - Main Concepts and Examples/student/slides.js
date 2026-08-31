@@ -10,7 +10,7 @@ const agentInteraction = (observation = false) => String.raw`
     <li>The agent observes \(${observation ? "o_t" : "s_t"}\)</li>
     <li>The agent takes action \(a_t\)</li>
     <li>The environment generates a reward \(r_t\)</li>
-    <li>The environment ${observation ? "omits observation" : "transitions to state"} \(${observation ? "o_{t+1}" : "s_{t+1}"}\)</li>
+    <li>The environment ${observation ? "emits observation" : "transitions to state"} \(${observation ? "o_{t+1}" : "s_{t+1}"}\)</li>
   </ul>`;
 
 const exampleQuestions = [
@@ -158,8 +158,8 @@ export const slides = [
   {title:"Outline",body:`<ul><li>General concepts in sequential decision making</li><li>Examples: Gridworld, Rescue Robot, Cart-Pole, LLM Fine-Tuning</li></ul>`},
   {title:"Previous lecture",body:previousLecture(false)},
   {title:"Previous lecture",body:previousLecture(true)},
-  {title:"Sequential decision making",body:`<p>Recall that a key feature of reinforcement learning is its sequential nature. In a sequential decision making problem</p><ul><li>The agent is making decisions over time, with the goal of maximizing (a notion of) long-run, cumulative rewards</li><li>Agents’ actions have consequences, and in particular, may change the future states of the environment</li><li>Rewards may only be realized at a future state</li><li>Even if getting immediate rewards at each state, the agent may forego high immediate rewards when accounting for long-term effects</li></ul>`},
-  {title:"Sequential decision making",body:`<p>Recall that a key feature of reinforcement learning is its sequential nature. In a sequential decision making problem</p><ul><li>The agent is making decisions over time, with the goal of maximizing (a notion of) long-run, cumulative rewards</li><li>Agents’ actions have consequences, and in particular, may change the future states of the environment</li><li>Rewards may only be realized at a future state</li><li>Even if getting immediate rewards at each state, the agent may forego high immediate rewards when accounting for long-term effects</li></ul><p class="spaced"><strong>Examples:</strong> playing chess, investing in the stock market, a robot on a disaster recovery mission.</p>`},
+  {title:"Sequential decision making",body:`<p>Recall that a key feature of reinforcement learning is its sequential nature. In a sequential decision making problem</p><ul><li>The agent is making decisions over time, with the goal of maximizing (a notion of) long-run, cumulative rewards</li><li>Agents’ actions have consequences, and in particular, may change the future states of the environment</li><li>Rewards may only be realized at a future state</li><li>Even if getting immediate rewards at each state, the agent may forgo high immediate rewards when accounting for long-term effects</li></ul>`},
+  {title:"Sequential decision making",body:`<p>Recall that a key feature of reinforcement learning is its sequential nature. In a sequential decision making problem</p><ul><li>The agent is making decisions over time, with the goal of maximizing (a notion of) long-run, cumulative rewards</li><li>Agents’ actions have consequences, and in particular, may change the future states of the environment</li><li>Rewards may only be realized at a future state</li><li>Even if getting immediate rewards at each state, the agent may forgo high immediate rewards when accounting for long-term effects</li></ul><p class="spaced"><strong>Examples:</strong> playing chess, investing in the stock market, a robot on a disaster recovery mission.</p>`},
   {title:"The Agent-Environment Interaction",body:agentInteraction(false)},
   {title:"The other components of RL",body:modelBlock},
   {title:"The other components of RL",body:modelBlock+policyBlock},

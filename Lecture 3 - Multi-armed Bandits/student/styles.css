@@ -31,6 +31,8 @@ h1 { margin:0; color:var(--scarlet); font-size:clamp(24px,3.05vw,48px); font-wei
 .principle { margin:.7em 0 0; padding:.45em .7em .55em; background:#f4f4f4; border-left:7px solid var(--scarlet); box-shadow:0 3px 8px #0002; }
 .principle h2 { margin:0 0 .25em; color:var(--scarlet); font-size:1em; }
 .principle.compact { font-size:.82em; margin:.35em 0; }
+.principle.model-based-blank { height:9em; }
+.model-based-blank .annotation-blank { width:100%; height:calc(100% - 1.35em); }
 .proof { display:grid; grid-template-columns:2.1em 1fr; gap:.5em; align-items:start; margin:.3em 0; }
 .proof-number { display:grid; place-items:center; width:1.7em; height:1.7em; border-radius:50%; background:var(--scarlet); color:#fff; font-weight:700; }
 .proof p { margin:0; }

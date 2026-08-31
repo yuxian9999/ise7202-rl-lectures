@@ -56,7 +56,7 @@ const explorationExample = stage => {
   const observations = stage >= 1 ? ul([
     S`At time \(t=1\), choose arm 1: \(I_1=1\), and observe \(R_{1,1}=0\).`,
     S`At time \(t=2\), choose arm 2: \(I_2=2\), and observe \(R_{2,2}=1\).`,
-    S`At time \(t=3\), the sample-average estimates are \(Q_3(1)=\frac{0}{1}=0\) and \(Q_3(2)=\frac{1}{1}=1\).`
+    ...(stage >= 2 ? [S`At time \(t=3\), the sample-average estimates are \(Q_3(1)=\frac{0}{1}=0\) and \(Q_3(2)=\frac{1}{1}=1\).`] : [])
   ]) : "";
   const consequence = stage >= 2 ? S`<div class="example-consequence">
     ${display(S`I_3=\arg\max_{i\in\{1,2\}}Q_3(i)=2`)}
@@ -153,17 +153,14 @@ export const slides = [
     <p>Suppose the reward distributions \(\nu_i\), and therefore the means \(\mu_i\), are known.</p>
     <p>Let \(\mu^*=\max_i\mu_i,\qquad i^*=\arg\max_i\mu_i\).</p>
     <p>Let \(V_k^*\) denote the optimal expected reward from time \(k\) through the horizon \(T\).</p>
-    <div class="principle">
+    <div class="principle model-based-blank">
       <h2>Model-based approach</h2>
-      <p>Because there is no state and the rewards are independent across time,</p>
-      ${display(S`V_k^*=(T-k+1)\mu^*`)}
-      <p>and the optimal arm at time \(k\) solves</p>
-      ${display(S`I_k^*=\arg\max_i\mathbb E\!\left[R_{i,k}+V_{k+1}^*\right]=\arg\max_i\mu_i=i^*.`)}
+      <div class="annotation-blank" aria-label="Blank space for handwritten model-based derivation"></div>
     </div>
     <p class="spaced"><span class="scarlet"><strong>Model-free challenge:</strong></span> In a bandit problem, \(\nu_i\) and \(\mu_i\) are unknown, so the learner must estimate them while collecting rewards.</p>
   `},
   ...[0,1,2,3,4].map(i=>({kind:"dense",title:"Initial ideas: Action-value methods",body:actionValue(i)})),
-  ...[0,1,2,3].map(i=>({kind:"dense exploration-example",title:"Exploration vs. Exploitation",body:explorationExample(i)})),
+  ...[0,1].map(i=>({kind:"dense exploration-example",title:"Exploration vs. Exploitation",body:explorationExample(i)})),
   ...[0,1,3].map(i=>({kind:"dense",title:"Non-stationary problems",body:nonstationary(i)})),
 
   {kind:"dense",title:"Another idea: optimism in the face of uncertainty (UCB)",body:reveal(ucb,2)},
