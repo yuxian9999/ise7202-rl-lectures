@@ -103,8 +103,8 @@ const mdpElements = [
 ];
 const returns = [
   `The <span class="scarlet">reward hypothesis</span>: the agent’s learning goal is aligned with maximizing the cumulative sum of rewards.`,
-  S`<span class="scarlet">Episodic tasks:</span> task stops after reaching a terminal state at the time of termination \(T\) (a r.v.). In contrast to continuing tasks.`,
-  S`<span class="scarlet">The return:</span>${display(S`\begin{aligned}G_t&=R_t+R_{t+1}+\cdots+R_T &&\text{(episodic)},\\G_t&=R_t+\delta R_{t+1}+\delta^2R_{t+2}+\cdots &&\text{(continuing)}.\end{aligned}`)}`,
+  S`<span class="scarlet">Finite-horizon tasks:</span> task stops after the time of termination \(T\).`,
+  S`<span class="scarlet">The return:</span>${display(S`\begin{aligned}G_t&=R_t+R_{t+1}+\cdots+R_T &&\text{(finite-horizon)},\\G_t&=R_t+\delta R_{t+1}+\delta^2R_{t+2}+\cdots &&\text{(infinite-horizon)}.\end{aligned}`)}`,
   S`Note that ${display(S`G_t=R_t+\delta G_{t+1}.`)}`
 ];
 const policies = [
@@ -124,8 +124,7 @@ const valueFunctions = [
 ];
 const bellmanDerivation = [
   S`A fundamental property of value functions used throughout DP/RL is a recursive relationship they satisfy. Let’s start from the definition ${display(S`v_\pi(s)=\mathbb E_\pi[G_t\mid S_t=s]\ldots`)}`,
-  S`${display(S`\begin{aligned}v_\pi(s)&=\mathbb E_\pi\!\left[\sum_{k=0}^{\infty}\delta^kR_{t+k}\mid S_t=s\right]\\&=\mathbb E_\pi\!\left[R_t+\delta\sum_{k=1}^{\infty}\delta^{k-1}R_{t+k}\mid S_t=s\right]\\&=\sum_{a\in\mathcal A}\pi(a\mid s)\sum_{s'\in\mathcal S}p(s,a,s')\,\mathbb E_\pi[R_t+\delta G_{t+1}\mid S_t=s,A_t=a,S_{t+1}=s']\\&=\sum_{a\in\mathcal A}\pi(a\mid s)\sum_{s'\in\mathcal S}p(s,a,s')\,[r(s,a)+\delta v_\pi(s')].\end{aligned}`)}`,
-  S`<span class="scarlet">Question:</span> Can you derive the Bellman equation for \(q_\pi(s,a)\)?`
+  S`${display(S`\begin{aligned}v_\pi(s)&=\mathbb E_\pi\!\left[\sum_{k=0}^{\infty}\delta^kR_{t+k}\mid S_t=s\right]\\&=\mathbb E_\pi\!\left[R_t+\delta\sum_{k=1}^{\infty}\delta^{k-1}R_{t+k}\mid S_t=s\right]\\&=\sum_{a\in\mathcal A}\pi(a\mid s)\sum_{s'\in\mathcal S}p(s,a,s')\,\mathbb E_\pi[R_t+\delta G_{t+1}\mid S_t=s,A_t=a,S_{t+1}=s']\\&=\sum_{a\in\mathcal A}\pi(a\mid s)\sum_{s'\in\mathcal S}p(s,a,s')\,[r(s,a)+\delta v_\pi(s')].\end{aligned}`)}`
 ];
 const optimalViaValue = [
   S`Value functions provide a partial ordering over policies. A policy \(\pi\) is better than \(\pi'\) if and only if \(v_\pi(s)\ge v_{\pi'}(s),\ \forall s\in\mathcal S\).`,
@@ -134,7 +133,7 @@ const optimalViaValue = [
   `Note: How is this different from our earlier definition of the optimal policy? Which one is stricter?`,
   S`Denote the optimal state-value function \(v^*(s)=\max_\pi v_\pi(s)\), and the optimal action-value function \(q^*(s,a)=\max_\pi q_\pi(s,a)\). If I can find a policy \(\pi^*\) for which \(v_{\pi^*}(s)=v^*(s),\forall s\), then I have found an optimal policy.`
 ];
-const bellmanOptimality = S`<ul><li>The Bellman equation for \(v_*\) has a special form. It comes from noting that the value of the state under the optimal policy must equal the expected return for the best action from that state.</li><li>This special form is called the <span class="scarlet">Bellman optimality equation</span>:${display(S`v_*(s)=\max_a\sum_{s'}p(s,a,s')\bigl(r(s,a)+\delta v_*(s')\bigr).`)}</li></ul>`;
+const bellmanOptimality = S`<ul><li><strong>Fix the first action.</strong> If the agent chooses \(a\) in state \(s\) and behaves optimally thereafter, its expected return is${display(S`\begin{aligned}&\mathbb E\!\left[R_t+\delta v_*(S_{t+1})\mid S_t=s,A_t=a\right]\\&\qquad=\sum_{s'}p(s,a,s')\bigl(r(s,a)+\delta v_*(s')\bigr).\end{aligned}`)}</li><li><strong>Choose the best first action.</strong> Therefore,${display(S`\boxed{v_*(s)=\max_a\sum_{s'}p(s,a,s')\bigl(r(s,a)+\delta v_*(s')\bigr).}`)}</li><li><strong>Why is the continuation optimal?</strong> If it were not optimal after some \(s'\), replacing it with an optimal continuation would improve the return, contradicting the definition of \(v_*(s)\).</li></ul>`;
 const whyOptimality = [
   S`If a policy \(\pi\) satisfies the Bellman optimality equations, it is an optimal policy.`,
   S`(Under the assumptions we have made on the MDP) there exists a policy \(\pi\) that satisfies the Bellman optimality equations.`,
@@ -154,7 +153,7 @@ const policyEval = [
 
 export const slides = [
   {kind:"title",title:course.lecture,body:`<div class="title-card"><div class="title-rule"></div><h1>${course.lecture}</h1><p class="course-line">${course.number} ${course.name}</p><p>${course.institution}</p><p>Autumn 2026</p><p class="professor">${course.professor}</p></div>`},
-  {title:"Outline",body:ul([`Last week: MABs. Basic problem in sequential decision making`,`Wrap up of MABs: more general frameworks, references`,`A more general sequential decision making problem: Markov Decision Processes<ul><li>(Review of) the defining elements of an MDP</li><li>Episodic vs continuing tasks</li><li>Agents’ policies</li></ul>`])},
+  {title:"Outline",body:ul([`Last week: MABs. Basic problem in sequential decision making`,`Wrap up of MABs: more general frameworks, references`,`A more general sequential decision making problem: Markov Decision Processes<ul><li>(Review of) the defining elements of an MDP</li><li>Finite-horizon v.s. infinite-horizon tasks</li><li>Agents’ policies</li></ul>`])},
   ...[2,6,7].map(i=>({kind:`dense${i===7?" recap-full":""}`,title:"Quick recap of MABs",body:visible(mabRecap,i)})),
   ...[1,2].map(i=>({kind:"dense",title:`Review: “Sophisticated” exploration vs exploitation`,body:`<p>Seems some algorithms do balance exploration and exploitation, but take their time. Can we formalize this?</p>`+reveal(regretReview,i)})),
   ...[0,1,2,3].map(i=>({kind:"dense",title:"UCB regret (upper) bounds¹",body:visible(regretBounds,i)+`<p class="footnote">¹ If interested, see Slivkins (2019) for derivation details.</p>`})),
@@ -166,12 +165,14 @@ export const slides = [
   {title:"MDPs: the agent-environment interaction",body:S`<p>Recall the agent-environment interaction.<br>Let \(t=0,1,2,\ldots\) denote the time step. At each time \(t\):</p>${ul(interaction)}<p><span class="scarlet">Assumptions:</span> \(|\mathcal S|<\infty\) and \(|\mathcal A|<\infty\), and reward is bounded: \(|R_t|\le R_{\max},\forall t\).</p>`},
   ...[0,1,2,3,4].map(i=>({kind:"dense",title:"MDPs: the defining elements",body:S`<p>An MDP is defined by \(\langle\mathcal S,\mathcal A,p,r,d_0,\delta\rangle\).</p>`+visible(mdpElements,i)})),
   ...[0,1,2,3].map(i=>({kind:"dense",title:"Agents’ goal and returns",body:visible(returns,i)})),
-  {kind:"cartpole",title:"Example: Cart-Pole Balancing",body:`<p>Let’s say the balancing fails if the pole falls some angle past the vertical.<br>The pole is reset to vertical after each failure.<br>Would you model this as an episodic or continuing task?</p><div class="cartpole-diagram" aria-label="Cart pole balancing schematic"><div class="track"></div><div class="cart"><div class="pole"></div></div></div>`},
+  {kind:"cartpole",title:"Example: Cart-Pole Balancing",body:`<p>Let’s say the balancing fails if the pole falls some angle past the vertical.<br>The pole is reset to vertical after each failure.<br>Would you model this as a finite-horizon or infinite-horizon task?</p><div class="cartpole-diagram" aria-label="Cart pole balancing schematic"><div class="track"></div><div class="cart"><div class="pole"></div></div></div>`},
   ...[0,1,2,3].map(i=>({kind:"dense",title:"Policies",body:reveal(policies,i)})),
   ...[0,2].map(i=>({kind:"dense",title:"The optimal policy",body:reveal(optimalPolicy,i)})),
   ...[0,1].map(i=>({kind:"dense",title:"Value functions",body:visible(valueFunctions,i)})),
-  {kind:"dense chain-example",title:"Example: state-values and action-values in a chain MDP",body:S`<p>Consider a deterministic chain with discount factor \(\delta=0.9\). The policy \(\pi\) always selects <em>Right</em>.</p><div class="chain-line" aria-label="Five-state chain MDP"><span>\(s_0\)</span><b>\(\xrightarrow{R,0}\)</b><span>\(s_1\)</span><b>\(\xrightarrow{R,0}\)</b><span>\(s_2\)</span><b>\(\xrightarrow{R,0}\)</b><span>\(s_3\)</span><b>\(\xrightarrow{R,1}\)</b><span class="terminal">terminal</span></div><p>All other transitions have reward \(0\). Therefore,</p>${display(S`v_\pi(s_3)=1,\quad v_\pi(s_2)=0.9,\quad v_\pi(s_1)=0.9^2,\quad v_\pi(s_0)=0.9^3.`)}<p>For example, \(q_\pi(s_2,\text{Right})=0.9\).</p>`},
-  ...[0,1,2].map(i=>({kind:"dense",title:"The Bellman equation for v<sub>π</sub>",body:visibleSequence(bellmanDerivation,i,[1])})),
+  {kind:"dense chain-example",title:"Example: state-values and action-values in a chain MDP",body:S`<p>Consider a deterministic chain with discount factor \(\delta=0.9\). The policy \(\pi\) always selects <em>Right</em>.</p><div class="chain-line" aria-label="Five-state chain MDP with right, left, and self-loop transitions"><div class="chain-state-wrap"><span class="self-loop-marker loop-left" aria-label="Left self-loop with reward zero"><span>\(L,0\)</span></span><span class="state-node">\(s_0\)</span></div><div class="chain-edge"><span>\(\xrightarrow{R,0}\)</span><span>\(\xleftarrow{L,0}\)</span></div><span>\(s_1\)</span><div class="chain-edge"><span>\(\xrightarrow{R,0}\)</span><span>\(\xleftarrow{L,0}\)</span></div><span>\(s_2\)</span><div class="chain-edge"><span>\(\xrightarrow{R,0}\)</span><span>\(\xleftarrow{L,0}\)</span></div><span>\(s_3\)</span><div class="chain-edge one-way"><span>\(\xrightarrow{R,1}\)</span></div><div class="chain-state-wrap terminal-wrap"><span class="self-loop-marker loop-right" aria-label="Absorbing self-loop with zero reward"><span>\(\text{any},0\)</span></span><span class="state-node terminal">terminal</span></div></div><p>At \(s_0\), Left is a zero-reward self-loop; terminal is a zero-reward absorbing self-loop. Therefore,</p>${display(S`v_\pi(s_3)=1,\quad v_\pi(s_2)=0.9,\quad v_\pi(s_1)=0.9^2,\quad v_\pi(s_0)=0.9^3.`)}<p>For example, \(q_\pi(s_2,\text{Right})=0.9\). How about \(q_\pi(s_2,\text{Left})\)?</p>`},
+  ...[0,1].map(i=>({kind:"dense",title:"The Bellman equation for v<sub>π</sub>",body:visibleSequence(bellmanDerivation,i,[1])})),
+  {kind:"dense",title:"The Bellman equation for state-value function",body:visibleSequence(bellmanDerivation,1,[1])},
+  {kind:"dense bellman-action-question",title:"The Bellman equation for action-value function",body:S`<p><span class="scarlet">Question:</span> Can you derive the Bellman equation for \(q_\pi(s,a)\)?</p><div class="bellman-answer-space" aria-label="Blank space for a handwritten derivation of the Bellman equation for the action-value function"></div>`},
   ...[0,1,2,3,4].map(i=>({kind:"dense",title:"Using value functions to find the optimal policy",body:sequence(optimalViaValue,i,[2])})),
   {kind:"dense",title:"The Bellman optimality equation",body:bellmanOptimality},
   ...[1,2].map(i=>({kind:"dense",title:"Why the Bellman optimality equation?",body:`<p>Why is this “Bellman optimality equation” useful?</p>`+reveal(whyOptimality,i)})),
@@ -179,5 +180,5 @@ export const slides = [
   ...[0,1,2,3].map(i=>({kind:"dense",title:"Dynamic Programming",body:visible(dpItems,i)})),
   ...[0,1,2].map(i=>({kind:"dense",title:"Policy evaluation",body:reveal(policyEval,i)})),
   {kind:"algorithm",title:"Iterative policy evaluation algorithm",body:renderAlgorithm(policyEvaluationAlgorithmLatex)},
-  {title:"Next lecture",body:ul([`Dynamic programming, continued.`,`Homework 2 will be posted later tonight, and will be due next Friday.`])}
+  {title:"Next lecture",body:ul([`Dynamic programming, continued.`])}
 ];
