@@ -144,11 +144,11 @@ const mcConnectionItems = [
 
 const mcPredictionNotes = [
   "<strong>First-visit versus every-visit MC</strong>",
-  "We could update the value after every visit to a state \\(S_t\\), removing the “Unless ...” line from the pseudocode.",
+  "We could update the value after every visit to a state \\(S_t\\), removing the “if \\(S_t\\notin\\{S_0,S_1,\\ldots,S_{t-1}\\}\\) then” line from the pseudocode.",
   "<strong>Convergence:</strong> do we approximately obtain \\(v_\\pi\\)?",
   "The law of large numbers provides the key intuition.",
   "For policy improvement, we actually need Monte Carlo prediction of <span class=\"scarlet\">action-values</span>.",
-  "Without a model, finding a policy requires \\(q\\) functions (HW2, Problem 1, part d).",
+  "Without a model, finding a policy requires \\(q\\) functions.",
   "The method can calculate averages based on state-action visits.",
   "<span class=\"scarlet\">Exploration!</span> \\(\\rightarrow\\) exploring starts."
 ];
@@ -157,13 +157,18 @@ const mcControlItems = [
   "Monte Carlo control approximately finds an optimal policy.",
   S`For policy improvement, again use greedy one-step lookahead:` + display(S`\pi'(s)\in\arg\max_a q_\pi(s,a).`),
   "Start by considering a Monte Carlo version of policy iteration (PI).",
-  "Two issues remain: infinite prediction - policy-evaluation - loops, and exploring starts. First remove the infinite-loop limitation."
+  "Two obstacles remain: policy evaluation would need infinitely many episodes to converge, and the scheme relies on exploring starts. We remove the first limitation now."
 ];
 
 const esNotes = [
   "Does this find an optimal policy?",
   "<span class=\"scarlet\">Difficulty in the proof:</span> returns appended to the Returns list come from different policies.",
-  "For greater memory and computational efficiency, use an incremental implementation of the averaging step.",
+  S`For greater memory and computational efficiency, use an incremental implementation of the averaging step: after a new return \(G\), set \(N(S_t,A_t)\gets N(S_t,A_t)+1\) and` +
+    display(S`Q(S_t,A_t)\gets Q(S_t,A_t)+\frac{1}{N(S_t,A_t)}\bigl[G-Q(S_t,A_t)\bigr],`) +
+    "so the list of returns never has to be stored.",
+  'A simpler alternative is a <span class="scarlet">constant step size</span> \\(\\alpha\\in(0,1]\\):' +
+    display(S`Q(S_t,A_t)\gets Q(S_t,A_t)+\alpha\bigl[G-Q(S_t,A_t)\bigr],`) +
+    "which weights recent returns more heavily.",
   "The exploring-starts assumption is limiting in many applications."
 ];
 
@@ -191,11 +196,22 @@ const tdAdvantages = [
   "<span class=\"scarlet\"><strong>Answer:</strong></span> This remains an open question. In practice, TD has often been observed to converge faster."
 ];
 
+const updateRules =
+  '<p class="rules-lead">Compare the update rules:</p>' +
+  '<div class="update-rules">' +
+    '<div class="rule-row"><span class="rule-name">DP</span><span class="rule-math">' +
+      "\\(V(s)\\gets\\sum_a\\pi(a\\mid s)\\sum_{s',r}p(s',r\\mid s,a)\\bigl[r+\\delta V(s')\\bigr]\\)" +
+    '</span></div>' +
+    '<div class="rule-row"><span class="rule-name">MC</span><span class="rule-math">' +
+      '\\(V(S_t)\\gets V(S_t)+\\alpha\\bigl[G_t-V(S_t)\\bigr]\\)' +
+    '</span></div>' +
+  '</div>';
+
 const mcSummary = extra =>
   ul([
     "MC methods do not need a model of the environment.",
     "They do not bootstrap: value estimates are not based on other value estimates."
-  ]) + (extra ? "<p class=\"spaced\">Our second class of learning methods is <span class=\"scarlet\">temporal difference (TD)</span>. TD does not need a model, like MC, and it bootstraps, like DP.</p>" : "");
+  ]) + (extra ? updateRules + "<p class=\"spaced-tight\">Our second class of learning methods is <span class=\"scarlet\">temporal difference (TD)</span>. TD does not need a model, like MC, and it bootstraps, like DP.</p>" : "");
 
 const gridworldExample =
   '<div class="mc-gridworld-layout">' +
@@ -228,6 +244,76 @@ const gridworldExample =
     '</div>' +
   '</div>';
 
+const mcLeastSquares =
+  '<p>Why average the returns? For a state \\(s\\) with observed returns \\(G_1,\\dots,G_n\\), consider the squared error</p>' +
+  display(S`f(V)=\sum_{i=1}^{n}\bigl(G_i-V\bigr)^2.`) +
+  '<p>Setting \\(f\'(V)=-2\\sum_{i}\\bigl(G_i-V\\bigr)=0\\) gives</p>' +
+  display(S`V^\star=\frac{1}{n}\sum_{i=1}^{n}G_i,`) +
+  '<p>which is exactly the Monte Carlo estimate.</p>' +
+  '<div class="principle compact"><p>Batch MC converges to the value function with the <span class="scarlet">minimum squared error on the training data</span>: it is the best fit to the returns actually observed. We will see that batch TD answers a different question.</p></div>';
+
+const tdCertaintyEquivalence =
+  '<p>Batch MC returned the best fit to the returns actually observed. Batch TD instead fits a ' +
+    '<span class="scarlet">model</span> to the data: from the observed transitions, form the maximum-likelihood estimates</p>' +
+  display(S`\hat p(s'\mid s,a)=\frac{\#\{(s,a)\to s'\}}{\#\{(s,a)\}},\qquad \hat r(s,a)=\text{average reward observed after }(s,a),`) +
+  '<p>and report the value function that is <em>exactly</em> correct for that model:</p>' +
+  display(S`V(s)=\sum_a\pi(a\mid s)\sum_{s'}\hat p(s'\mid s,a)\bigl[\hat r(s,a)+\delta V(s')\bigr].`) +
+  '<div class="principle compact"><p>This is the <span class="scarlet">certainty-equivalence estimate</span>. MC asks &ldquo;what fits the returns I saw?&rdquo;; TD asks &ldquo;what is the value under the best-fitting Markov model?&rdquo; TD usually predicts future data better - unless the process is not Markov.</p></div>';
+
+const tdFixedPoint =
+  '<p><strong>Batch TD(0):</strong> sweep the whole batch with \\(V\\) held fixed, apply the accumulated increments, and repeat. At convergence the increments at each state \\(s\\) must cancel:</p>' +
+  display(S`\sum_{t:\,S_t=s}\bigl[R_t+\delta V(S_{t+1})-V(s)\bigr]=0.`) +
+  '<p>With \\(n(s)\\) visits to \\(s\\), and \\(n(s,s\',r)\\) counting how often \\((s\',r)\\) followed \\(s\\),</p>' +
+  display(S`\begin{aligned}V(s)&=\frac{1}{n(s)}\sum_{t:\,S_t=s}\bigl[R_t+\delta V(S_{t+1})\bigr]\\&=\sum_{s',r}\frac{n(s,s',r)}{n(s)}\bigl[r+\delta V(s')\bigr].\end{aligned}`) +
+  '<div class="principle compact"><p>The ratio \\(n(s,s\',r)/n(s)\\) <em>is</em> the maximum-likelihood \\(\\hat p(s\',r\\mid s)\\), so this is the Bellman equation of the empirical model - reached without ever building it. Batch MC\'s condition is \\(\\sum_i\\bigl[G_i-V(s)\\bigr]=0\\): MC averages <span class="scarlet">whole returns</span>, TD averages <span class="scarlet">one-step targets</span>.</p></div>';
+
+const twoStateDiagram =
+  '<div class="mdp-figure">' +
+  '<svg viewBox="0 0 780 260" role="img" aria-label="Two-state MDP: states s1 and s2 with actions L and R leading to each other and to the terminal state T">' +
+    '<defs>' +
+      '<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">' +
+        '<path d="M0 0 L10 5 L0 10 z" fill="#ba0c2f"></path>' +
+      '</marker>' +
+    '</defs>' +
+    '<path d="M192 62 C 300 8, 480 8, 588 62" fill="none" stroke="#ba0c2f" stroke-width="3" marker-end="url(#ah)"></path>' +
+    '<text x="390" y="20" class="edge">R, 0</text>' +
+    '<path d="M588 114 C 480 168, 300 168, 192 114" fill="none" stroke="#ba0c2f" stroke-width="3" marker-end="url(#ah)"></path>' +
+    '<text x="390" y="138" class="edge">L, -1</text>' +
+    '<path d="M174 124 L 346 208" fill="none" stroke="#ba0c2f" stroke-width="3" marker-end="url(#ah)"></path>' +
+    '<text x="222" y="190" class="edge">L, +1</text>' +
+    '<path d="M606 124 L 434 208" fill="none" stroke="#ba0c2f" stroke-width="3" marker-end="url(#ah)"></path>' +
+    '<text x="558" y="190" class="edge">R, +5</text>' +
+    '<circle cx="150" cy="88" r="42" fill="#fff" stroke="#ba0c2f" stroke-width="4"></circle>' +
+    '<text x="150" y="88" class="node">s<tspan font-size="21" dy="9">1</tspan></text>' +
+    '<circle cx="630" cy="88" r="42" fill="#fff" stroke="#ba0c2f" stroke-width="4"></circle>' +
+    '<text x="630" y="88" class="node">s<tspan font-size="21" dy="9">2</tspan></text>' +
+    '<rect x="345" y="200" width="90" height="44" rx="5" fill="#f2f2f2" stroke="#777" stroke-width="3"></rect>' +
+    '<text x="390" y="222" class="node">T</text>' +
+  '</svg>' +
+  '</div>';
+
+const mcEsExample =
+  twoStateDiagram +
+  '<p class="mdp-caption">Start from \\(Q\\equiv0\\), \\(\\delta=1\\), and the policy \\(\\pi(s_1)=L,\\ \\pi(s_2)=L\\). Exploring starts pick \\((S_0,A_0)\\); afterwards follow \\(\\pi\\).</p>' +
+  '<div class="table-fill"><table class="ex-table wide-q">' +
+    '<tr><th>Episode</th><th>Start</th><th>Trajectory</th><th>\\(Q\\) updated</th><th>New \\(\\pi\\)</th></tr>' +
+    '<tr><td>1</td><td>\\((s_1,L)\\)</td><td>\\(s_1\\xrightarrow{L,+1}T\\)</td><td></td><td></td></tr>' +
+    '<tr><td>2</td><td>\\((s_1,R)\\)</td><td>\\(s_1\\xrightarrow{R,0}s_2\\xrightarrow{L,-1}s_1\\xrightarrow{L,+1}T\\)</td><td></td><td></td></tr>' +
+    '<tr><td>3</td><td>\\((s_2,R)\\)</td><td>\\(s_2\\xrightarrow{R,+5}T\\)</td><td></td><td></td></tr>' +
+    '<tr><td>4</td><td>\\((s_1,R)\\)</td><td>\\(s_1\\xrightarrow{R,0}s_2\\xrightarrow{?}\\)</td><td></td><td></td></tr>' +
+  '</table></div>';
+
+const mcVsTdEpisode =
+  '<p><strong>A three-state chain.</strong> \\(A\\to B\\to C\\to T\\), all rewards \\(0\\) except \\(C\\to T\\) which pays \\(+1\\). Take \\(\\delta=1\\), \\(\\alpha=0.5\\), and initialize \\(V(A)=V(B)=V(C)=0\\).</p>' +
+  '<p>Run the single episode \\(A\\xrightarrow{0}B\\xrightarrow{0}C\\xrightarrow{+1}T\\) and fill in the table.</p>' +
+  '<table class="ex-table roomy">' +
+    '<tr><th>After episode 1</th><th>\\(V(A)\\)</th><th>\\(V(B)\\)</th><th>\\(V(C)\\)</th></tr>' +
+    '<tr><td>MC, \\(V\\gets V+\\alpha[G_t-V]\\)</td><td></td><td></td><td></td></tr>' +
+    '<tr><td>TD(0), updated every step</td><td></td><td></td><td></td></tr>' +
+    '<tr><td>TD(0) after a second identical episode</td><td></td><td></td><td></td></tr>' +
+  '</table>' +
+  '<p class="ask"><strong>Ask:</strong> after one episode MC has moved all three states but TD only one. Which one, and how many episodes does TD need for the reward to reach \\(A\\)?</p>';
+
 export const slides = [
   {kind:"title",title:course.lecture,body:`<div class="title-card"><div class="title-rule"></div><h1>${course.lecture}</h1><p class="course-line">${course.number} ${course.name}</p><p>${course.institution}</p><p>Autumn 2026</p><p class="professor">${course.professor}</p></div>`},
   {title:"Outline",body:ul([
@@ -240,16 +326,20 @@ export const slides = [
   ...[2,3,5].map(i => ({kind:"dense",title:"Monte Carlo methods",body:visible(mcConnectionItems,i)})),
 
   {kind:"algorithm algorithm-medium",title:"Monte Carlo prediction",body:renderAlgorithm(mcPredictionLatex)},
+  {kind:"dense",title:"Monte Carlo minimizes error on the training data",body:mcLeastSquares},
   {kind:"dense mc-gridworld-slide",title:"An example: finding \\(v_\\pi\\) for the random policy in Gridworld",body:gridworldExample},
   ...[1,3,6,7].map(i => ({kind:"dense",title:"Some notes on MC prediction",body:visible(mcPredictionNotes,i)})),
 
   ...[2,3].map(i => ({kind:"dense",title:"Monte Carlo control",body:visible(mcControlItems,i)})),
   {kind:"algorithm algorithm-long",title:"Monte Carlo method with exploring starts",body:renderAlgorithm(mcExploringStartsLatex)},
-  ...[0,1,2,3].map(i => ({kind:"dense",title:"Notes on the First-Visit MC ES algorithm",body:visible(esNotes,i)})),
+  ...[0,1,2,3,4].map(i => ({kind:"dense",title:"Notes on the First-Visit MC ES algorithm",body:visible(esNotes,i)})),
+  {kind:"dense mc-es-slide",title:"Example: MC control with exploring starts",body:mcEsExample},
   {kind:"algorithm algorithm-extra-long",title:"On-policy Monte Carlo method without exploring starts",body:renderAlgorithm(onPolicyMCLatex)},
 
   {kind:"dense",title:"How are Monte Carlo methods different from DP methods?",body:mcSummary(false)},
   {kind:"dense",title:"How are Monte Carlo methods different from DP methods?",body:mcSummary(true)},
+
+  ...[0,1,2,3].map(i => ({kind:"dense",title:"TD prediction",body:visible(tdPredictionItems,i)})),
 
   {kind:"dense",title:"Let us illustrate MC versus TD with an example",body:
     "<p>Suppose we observe the following eight episodes, with only one action:</p>" +
@@ -261,9 +351,12 @@ export const slides = [
     ul(["Let us compare batch updating using MC versus TD:","(batch) MC would say","(batch) TD would say"]) +
     "<p class=\"footnote\">Example 6.4 from SB</p>"},
 
+  {kind:"dense",title:"What batch TD solves",body:tdCertaintyEquivalence},
+  {kind:"dense",title:"Why: the batch TD fixed point",body:tdFixedPoint},
+
   ...[1,3,4].map(i => ({kind:"dense",title:"Temporal Difference (TD) methods",body:visible(tdMethodItems,i)})),
-  ...[0,1,2,3].map(i => ({kind:"dense",title:"TD prediction",body:visible(tdPredictionItems,i)})),
   {kind:"algorithm algorithm-medium",title:"TD(0) prediction algorithm",body:renderAlgorithm(tdPredictionLatex)},
+  {kind:"dense",title:"Example: MC versus TD on one episode",body:mcVsTdEpisode},
   ...[0,1,2,3,4,5].map(i => ({kind:"dense",title:"Advantages of TD prediction",body:visible(tdAdvantages,i)})),
-  {title:"Next lecture",body:ul(["Temporal Difference (TD) methods, continued.","Homework 3 due Friday by 11:59pm ET."])}
+  {title:"Next lecture",body:ul(["Temporal Difference (TD) methods, continued."])}
 ];
