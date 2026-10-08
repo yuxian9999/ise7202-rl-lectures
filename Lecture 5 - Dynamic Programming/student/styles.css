@@ -90,24 +90,25 @@ footer span:last-child { color:var(--scarlet); font-weight:700; text-align:right
 .algorithm-code .indent2 { padding-left:3em; }
 .algorithm-code .math-line { margin:.15em 0; }
 .algorithm-code .katex { font-size:1em; }
-.latex-algorithm { width:88%; margin:.25em auto; border-top:2px solid #333; border-bottom:2px solid #333; font-family:"Times New Roman",Times,serif; }
+.latex-algorithm { width:88%; margin:.25em auto; border-top:2px solid #333; border-bottom:2px solid #333; font-family:inherit; }
 .algorithm-caption { padding:.45em .7em; border-bottom:1px solid #777; text-align:left; }
 .algorithm-caption strong { margin-right:.55em; }
-.algorithmic { padding:.45em .7em .55em; font-size:.82em; line-height:1.22; }
-.alg-row { display:grid; grid-template-columns:2.1em 1fr; gap:.45em; padding:.06em 0 .06em calc(var(--indent) * 1.55em); }
-.alg-num { color:#666; text-align:right; font-size:.8em; font-variant-numeric:tabular-nums; }
+.algorithmic { padding:.3em .55em .4em; font-size:1em; line-height:1.16; }
+.alg-row { display:grid; grid-template-columns:2.1em 1fr; gap:.45em; padding:.06em 0; }
+.alg-row > span:last-child { padding-left:calc(var(--indent) * 1.55em); }
+.alg-num { color:#666; text-align:left; font-size:.78em; font-variant-numeric:tabular-nums; }
 .alg-input,.alg-output { padding-left:0; }
 .alg-end { font-style:normal; }
 .latex-algorithm .katex { font-size:1em; }
 .alg-section { padding-top:.18em; padding-bottom:.04em; font-style:italic; }
-.alg-box { margin:.14em .6em .14em 1.1em; padding:.05em .3em .07em 0; border:2px solid #111; }
+.alg-box { margin:.14em .6em .14em 1.1em; padding:.05em .3em .07em .4em; border:2px solid #111; }
 .alg-box .alg-section { padding-top:.06em; }
 .algorithm-long .latex-algorithm { width:94%; margin-top:-.2em; }
 .algorithm-long header { height:10%; }
 .algorithm-long .body { height:83%; padding-top:.2%; padding-bottom:.2%; }
 .algorithm-long .algorithm-caption { padding:.26em .7em; }
-.algorithm-long .algorithmic { padding:.06em .45em .08em; font-size:.78em; line-height:1; }
-.algorithm-long .alg-row { grid-template-columns:1.8em 1fr; gap:.35em; padding-top:0; padding-bottom:0; padding-left:calc(var(--indent) * 1.2em); }
+.algorithm-long .algorithmic { padding:.18em .45em .1em; font-size:.78em; line-height:1.06; }
+.algorithm-long .alg-row { grid-template-columns:1.8em 1fr; gap:.35em; padding-top:0; padding-bottom:0; padding-left:0; }
 .pi-example-slide .body { padding-top:1.2%; }
 .pi-example { font-size:.98em; line-height:1.25; }
 .pi-mdp { text-align:center; font-size:1.25em; }
@@ -166,3 +167,7 @@ footer span:last-child { color:var(--scarlet); font-weight:700; text-align:right
 .controls span { min-width:60px; text-align:center; font-variant-numeric:tabular-nums; }
 @media(max-aspect-ratio:4/3){.deck{padding:0}.slide{width:100%;height:auto}.body{font-size:2.2vw}.controls{right:8px;bottom:8px}}
 @media print { html,body{overflow:visible;background:#fff}.deck{display:block;width:auto;height:auto;padding:0}.slide{width:13.333in;height:7.5in;box-shadow:none;break-after:page}.controls{display:none} }
+
+/* line numbers in a flush-left column; indent carried by the code text */
+.algorithm-long .alg-row > span:last-child { padding-left:calc(var(--indent) * 1.2em); }
+.slide.algorithm .body { display:flex; flex-direction:column; justify-content:center; }

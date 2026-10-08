@@ -90,12 +90,13 @@ footer span:last-child { color:var(--scarlet); font-weight:700; text-align:right
 .algorithm-code .indent2 { padding-left:3em; }
 .algorithm-code .math-line { margin:.15em 0; }
 .algorithm-code .katex { font-size:1em; }
-.latex-algorithm { width:88%; margin:.25em auto; border-top:2px solid #333; border-bottom:2px solid #333; font-family:"Times New Roman",Times,serif; }
+.latex-algorithm { width:88%; margin:.25em auto; border-top:2px solid #333; border-bottom:2px solid #333; font-family:inherit; }
 .algorithm-caption { padding:.45em .7em; border-bottom:1px solid #777; text-align:left; }
 .algorithm-caption strong { margin-right:.55em; }
-.algorithmic { padding:.45em .7em .55em; font-size:.82em; line-height:1.22; }
-.alg-row { display:grid; grid-template-columns:2.1em 1fr; gap:.45em; padding:.06em 0 .06em calc(var(--indent) * 1.55em); }
-.alg-num { color:#666; text-align:right; font-size:.8em; font-variant-numeric:tabular-nums; }
+.algorithmic { padding:.3em .55em .4em; font-size:1em; line-height:1.2; }
+.alg-row { display:grid; grid-template-columns:2.1em 1fr; gap:.45em; padding:.06em 0; }
+.alg-row > span:last-child { padding-left:calc(var(--indent) * 1.55em); }
+.alg-num { color:#666; text-align:left; font-size:.78em; font-variant-numeric:tabular-nums; }
 .alg-input,.alg-output { padding-left:0; }
 .alg-end { font-style:normal; }
 .latex-algorithm .katex { font-size:1em; }
@@ -104,26 +105,30 @@ footer span:last-child { color:var(--scarlet); font-weight:700; text-align:right
 .algorithm-long .body { padding-top:.8%; padding-bottom:.5%; }
 .algorithm-long .algorithmic { padding:.16em .44em .22em; font-size:.86em; line-height:.98; }
 .algorithm-long .alg-row { grid-template-columns:1.8em 1fr; gap:.35em; padding-top:0; padding-bottom:0; padding-left:calc(var(--indent) * 1.2em); }
+.slide.algorithm .body { display:flex; flex-direction:column; justify-content:center; }
 .algorithm-medium .body { padding-top:1.2%; padding-bottom:1%; }
 .algorithm-medium .latex-algorithm { width:92%; margin-top:0; }
-.algorithm-medium .algorithmic { padding:.22em .55em .3em; font-size:.92em; line-height:1.03; }
+.algorithm-medium .algorithmic { padding:.3em .55em .4em; font-size:1em; line-height:1.2; }
 .algorithm-medium .alg-row { padding-top:.02em; padding-bottom:.02em; }
 .algorithm-extra-long .body { padding-top:.45%; padding-bottom:.3%; }
 .algorithm-extra-long .latex-algorithm { width:96%; margin-top:-.25em; }
 .algorithm-extra-long .algorithm-caption { padding:.25em .55em; font-size:1em; }
-.algorithm-extra-long .algorithmic { padding:.08em .32em .14em; font-size:.82em; line-height:.96; }
-.algorithm-extra-long .alg-row { grid-template-columns:1.65em 1fr; gap:.25em; padding-top:0; padding-bottom:0; padding-left:calc(var(--indent) * 1.05em); }
+.algorithm-extra-long .algorithmic { padding:.22em .4em .3em; font-size:1em; line-height:1.18; }
+.algorithm-extra-long .alg-row { grid-template-columns:1.9em 1fr; gap:.35em; padding-top:.02em; padding-bottom:.02em; padding-left:0; }
+.algorithm-extra-long .alg-row > span:last-child { padding-left:calc(var(--indent) * 1.3em); }
 .algorithm-nstep-td .algorithmic { font-size:.78em; line-height:.92; }
 .algorithm-nstep-sarsa .algorithmic { font-size:.68em; line-height:.86; }
 .algorithm-nstep-sarsa .algorithm-caption { font-size:.92em; }
-.inline-algorithm-slide .body { padding-top:.8%; font-size:clamp(15px,1.34vw,22.8px); line-height:1.12; }
+.inline-algorithm-slide .body { padding-top:.8%; padding-bottom:1%; font-size:clamp(15px,1.34vw,22.8px); line-height:1.12; }
 .inline-algorithm-slide .body li { margin:.12em 0; }
 .inline-algorithm-slide .display { margin:.18em auto; }
-.inline-algorithm-slide .latex-algorithm { width:96%; margin:.22em auto 0; }
-.inline-algorithm-slide .algorithm-caption { padding:.22em .45em; }
-.inline-algorithm-slide .algorithmic { padding:.12em .3em .18em; font-size:.8em; line-height:.95; }
-.inline-algorithm-slide .alg-row { padding-top:0; padding-bottom:0; padding-left:calc(var(--indent) * 1.1em); }
-.algorithm-sarsa-fa .algorithmic { font-size:.82em; line-height:.94; }
+.inline-algorithm-slide .latex-algorithm { width:96%; margin:.1em auto 0; font-family:inherit; }
+.inline-algorithm-slide .algorithm-caption { padding:.3em .5em; }
+.inline-algorithm-slide .algorithmic { padding:.2em .45em .3em; font-size:1em; line-height:1.2; }
+.inline-algorithm-slide .alg-row { padding-top:.04em; padding-bottom:.04em; padding-left:0; }
+.inline-algorithm-slide .alg-row > span:last-child { padding-left:calc(var(--indent) * 1.2em); }
+.inline-algorithm-slide .alg-num { font-size:.78em; text-align:left; }
+.algorithm-sarsa-fa .algorithmic { font-size:1em; line-height:1.18; }
 .algorithm-sarsa-fa .algorithm-caption { font-size:1em; }
 .question-line { margin-top:.55em !important; color:var(--scarlet); font-weight:700; }
 .tetris-image-slide .body { display:grid; place-items:center; padding-top:1%; }
@@ -195,3 +200,73 @@ footer span:last-child { color:var(--scarlet); font-weight:700; text-align:right
 .controls span { min-width:60px; text-align:center; font-variant-numeric:tabular-nums; }
 @media(max-aspect-ratio:4/3){.deck{padding:0}.slide{width:100%;height:auto}.body{font-size:2.2vw}.controls{right:8px;bottom:8px}}
 @media print { html,body{overflow:visible;background:#fff}.deck{display:block;width:auto;height:auto;padding:0}.slide{width:13.333in;height:7.5in;box-shadow:none;break-after:page}.controls{display:none} }
+.sgd-convergence-slide .body { padding:1% 6.2% 7.6%; font-size:clamp(15px,1.5vw,25.5px); line-height:1.16; }
+.sgd-convergence-slide .theorem-box { width:96%; margin:.3em auto .35em; }
+.sgd-convergence-slide .theorem-body { padding:.38em .75em .45em; }
+.sgd-convergence-slide .theorem-body p { margin:.1em 0; }
+.sgd-convergence-slide .theorem-name { padding:.22em .65em; }
+.sgd-convergence-slide ul { margin:.15em 0 0 1em; }
+.sgd-convergence-slide li { margin:.28em 0; }
+.sgd-convergence-slide .footnote { left:6.2%; right:6.2%; bottom:8.6%; line-height:1.25; }
+
+/* ---- deep Q-learning figures ---- */
+.nn-figure,.arch-figure,.replay-figure { width:100%; margin:.3em auto 0; }
+.nn-figure svg,.arch-figure svg,.replay-figure svg { display:block; width:100%; height:auto; }
+.nn-figure .nn-edges line,.arch-figure .nn-edges line { stroke:#777; stroke-width:1.5; }
+.nn-figure .nn-nodes circle,.arch-figure .nn-nodes circle { fill:#fff; stroke:#333; stroke-width:2.4; }
+.nn-figure text,.arch-figure text { font:24px Arial,Helvetica,sans-serif; fill:#222; }
+.nn-figure .nn-in,.arch-figure .nn-in { font-weight:700; text-anchor:end; }
+.nn-figure .nn-out,.arch-figure .nn-out { fill:var(--scarlet); font-weight:700; }
+.nn-figure .nn-out { font-size:27px; text-anchor:middle; }
+.nn-figure .nn-edges line { stroke:#777; stroke-width:1.8; }
+.nn-figure .nn-edges path,.nn-figure marker path { fill:#777; }
+.nn-figure .nn-cap,.arch-figure .nn-cap { fill:#666; font-size:22px; text-anchor:middle; }
+.nn-figure .nn-fwd { fill:#666; font-size:21px; text-anchor:middle; }
+.replay-figure .rp-cells rect { fill:#f5f5f5; stroke:#333; stroke-width:2.4; }
+.replay-figure .rp-text text { font:24px Arial,Helvetica,sans-serif; fill:#222; text-anchor:middle; }
+.replay-figure .rp-cap { fill:var(--scarlet) !important; font-weight:700; }
+.replay-figure .rp-arrows line { stroke:#333; stroke-width:2.6; }
+.replay-figure .rp-arrows path,.replay-figure marker path { fill:#333; }
+.nn-slide .nn-figure { width:98%; margin:.2em auto 0; }
+.nn-figure .nn-box,.nn-figure .nn-ell { fill:#fff; stroke:#444; stroke-width:2.2; stroke-dasharray:9 6; }
+.nn-figure .nn-expr text { font:25px Arial,Helvetica,sans-serif; fill:#222; text-anchor:middle; dominant-baseline:middle; }
+.nn-figure .nn-flow line { stroke:#333; stroke-width:2.4; }
+.nn-figure .nn-flow path,.nn-figure marker path { fill:#333; }
+.nn-slide .display { margin:.15em auto; }
+.nn-note { margin:.1em 0 0 !important; text-align:center; font-size:.86em; color:#555; }
+.nn-figure .nn-unit text { font:700 31px Arial,Helvetica,sans-serif; fill:#222; text-anchor:middle; dominant-baseline:middle; }
+.nn-figure .nn-wt text { font:23px Arial,Helvetica,sans-serif; fill:var(--scarlet); text-anchor:middle; paint-order:stroke; stroke:#fff; stroke-width:6px; }
+.nn-figure .nn-cap { text-anchor:middle; }
+.arch-slide .arch-figure { width:92%; }
+.arch-figure .nn-out { font-size:21px; }
+.arch-figure .nn-cap { font-size:20px; }
+.replay-slide .replay-figure { width:82%; }
+.nn-slide .body,.arch-slide .body,.replay-slide .body { padding-top:1.2%; }
+.dqn-algorithm .algorithmic { font-size:.9em; line-height:1.12; }
+.nn-board-slide .body { padding-top:1%; }
+.nn-board-slide .nn-figure { margin-top:0; }
+
+/* DQN architecture and Atari results figures */
+.dqnarch-figure,.atari-figure { width:100%; margin:.4em auto 0; }
+.dqnarch-figure svg,.atari-figure svg { display:block; width:100%; height:auto; }
+.dqnarch-figure .da-box rect { fill:#fff; stroke:#333; stroke-width:2.4; }
+.dqnarch-figure .da-frame rect { fill:#f5f5f5; stroke:#333; stroke-width:2.2; }
+.dqnarch-figure .da-flow line { stroke:#333; stroke-width:2.6; }
+.dqnarch-figure .da-flow path,.dqnarch-figure marker path { fill:#333; }
+.dqnarch-figure .da-nodes circle { fill:#fff; stroke:#333; stroke-width:2.4; }
+.dqnarch-figure text { font:23px Arial,Helvetica,sans-serif; fill:#222; text-anchor:middle; }
+.dqnarch-figure .da-cap { font-size:21px; fill:#666; }
+.dqnarch-figure .da-out { font-size:23px; fill:var(--scarlet); font-weight:700; text-anchor:start; }
+.dqnarch-slide .dqnarch-figure { width:94%; }
+.atari-figure text { font:22px Arial,Helvetica,sans-serif; fill:#222; }
+.atari-figure .at-bars rect { fill:var(--scarlet); }
+.atari-figure .at-name { text-anchor:end; }
+.atari-figure .at-val { text-anchor:start; fill:#444; }
+.atari-figure .at-tick { text-anchor:middle; fill:#666; font-size:20px; }
+.atari-figure .at-axis line { stroke:#999; stroke-width:1.6; }
+.atari-figure .at-human line { stroke:var(--scarlet); stroke-width:2.2; stroke-dasharray:8 6; }
+.atari-figure .at-human text { fill:var(--scarlet); font-weight:700; font-size:20px; text-anchor:start; }
+.atari-slide .atari-figure { width:90%; }
+.atari-figure .at-cap { text-anchor:middle; fill:#666; font-size:21px; }
+.dqnarch-slide .body,.atari-slide .body { display:flex; flex-direction:column; justify-content:center; }
+.chart-note { margin:.35em auto 0; width:92%; font-size:.78em; color:#555; line-height:1.3; }
